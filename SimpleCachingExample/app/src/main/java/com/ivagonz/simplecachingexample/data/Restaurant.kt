@@ -1,4 +1,8 @@
-package com.codinginflow.simplecachingexample.data
+package com.ivagonz.simplecachingexample.data
 
-class Restaurant {
-}
+data class Restaurant(
+    val name: String?,
+    val type: String?,
+    val logo: String?,
+    val address: String?
+)
