@@ -31,7 +31,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRestaurantRespository(api: RestaurantApi) : RestaurantRepository =
+    fun provideRestaurantRepository(api: RestaurantApi) : RestaurantRepository =
         RestaurantRepositoryImpl(api)
 
 
