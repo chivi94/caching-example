@@ -1,4 +1,4 @@
-package com.ivagonz.simplecachingexample.data
+package com.ivagonz.simplecachingexample.domain.model
 
 data class Restaurant(
     val name: String?,

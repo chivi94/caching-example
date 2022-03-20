@@ -1,7 +1,7 @@
 package com.ivagonz.simplecachingexample.presentation.main.recyclerview.comparator
 
 import androidx.recyclerview.widget.DiffUtil
-import com.ivagonz.simplecachingexample.data.Restaurant
+import com.ivagonz.simplecachingexample.domain.model.Restaurant
 
 class RestaurantItemComparator : DiffUtil.ItemCallback<Restaurant>() {
 

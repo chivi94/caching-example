@@ -4,8 +4,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ivagonz.simplecachingexample.R
-import com.ivagonz.simplecachingexample.data.Restaurant
 import com.ivagonz.simplecachingexample.databinding.ViewHolderItemRestaurantBinding
+import com.ivagonz.simplecachingexample.domain.model.Restaurant
 
 
 class RestaurantItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {

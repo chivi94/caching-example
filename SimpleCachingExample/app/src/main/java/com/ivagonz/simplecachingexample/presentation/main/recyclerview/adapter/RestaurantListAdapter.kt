@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.ivagonz.simplecachingexample.R
-import com.ivagonz.simplecachingexample.data.Restaurant
+import com.ivagonz.simplecachingexample.domain.model.Restaurant
 import com.ivagonz.simplecachingexample.presentation.main.recyclerview.comparator.RestaurantItemComparator
 import com.ivagonz.simplecachingexample.presentation.main.recyclerview.view_holder.RestaurantItemViewHolder
 
@@ -26,7 +26,7 @@ class RestaurantListAdapter(private val mContext: Context) : ListAdapter<Restaur
 
     override fun getItemCount(): Int = mRestaurantsList.size
 
-    fun setFoods(newRestaurants: ArrayList<Restaurant>) {
+    fun setFoods(newRestaurants: List<Restaurant>) {
         mRestaurantsList.clear()
         mRestaurantsList.addAll(newRestaurants)
         notifyItemRangeChanged(0, newRestaurants.size)
