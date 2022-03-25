@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.ivagonz.simplecachingexample.R
+import com.ivagonz.simplecachingexample.databinding.ViewHolderItemRestaurantBinding
 import com.ivagonz.simplecachingexample.domain.model.Restaurant
 import com.ivagonz.simplecachingexample.presentation.main.recyclerview.comparator.RestaurantItemComparator
 import com.ivagonz.simplecachingexample.presentation.main.recyclerview.view_holder.RestaurantItemViewHolder

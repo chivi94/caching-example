@@ -1,12 +1,10 @@
 package com.ivagonz.simplecachingexample.di
 
+import android.app.Application
 import androidx.room.Room
-import com.ivagonz.simplecachingexample.RestaurantApplication
 import com.ivagonz.simplecachingexample.common.Constants
 import com.ivagonz.simplecachingexample.data.RestaurantDatabase
 import com.ivagonz.simplecachingexample.data.restaurant.api.RestaurantApi
-import com.ivagonz.simplecachingexample.data.restaurant.repository.RestaurantRepositoryImpl
-import com.ivagonz.simplecachingexample.domain.repository.RestaurantRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,18 +27,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(app: RestaurantApplication): RestaurantDatabase =
-        Room.databaseBuilder(app, RestaurantDatabase::class.java, Constants.DATABASE_NAME).build()
-
-    @Provides
-    @Singleton
     fun provideRestaurantApi(retrofit: Retrofit): RestaurantApi =
         retrofit.create(RestaurantApi::class.java)
 
     @Provides
     @Singleton
-    fun provideRestaurantRepository(api: RestaurantApi): RestaurantRepository =
-        RestaurantRepositoryImpl(api)
+    fun provideDatabase(app: Application): RestaurantDatabase =
+        Room.databaseBuilder(app, RestaurantDatabase::class.java, Constants.DATABASE_NAME).build()
 
 
 }

@@ -6,7 +6,7 @@ import com.ivagonz.simplecachingexample.domain.model.Restaurant
 
 @Entity(tableName = "restaurants")
 data class RestaurantDto(
-    @PrimaryKey val name: String?,
+    @PrimaryKey val name: String,
     val type: String?,
     val logo: String?,
     val address: String?

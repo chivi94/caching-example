@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ivagonz.simplecachingexample.common.Resource
+import com.ivagonz.simplecachingexample.data.restaurant.dto.toRestaurant
 import com.ivagonz.simplecachingexample.databinding.ActivityMainBinding
 import com.ivagonz.simplecachingexample.presentation.main.recyclerview.adapter.RestaurantListAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,9 +58,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupObservers() {
 
-        mViewModel.restaurantsList.observe(mLifeCycleOwner) { result ->
+        mViewModel.restaurants.observe(mLifeCycleOwner) { result ->
 
-            when (result) {
+            // New version
+            //result.data?.let { mRestaurantAdapter.setFoods(it.map { restaurantDto -> restaurantDto.toRestaurant() }) }
+
+            mRestaurantAdapter.submitList(result.data?.map { it.toRestaurant() })
+
+            binding.apply {
+                progress.isVisible = result is Resource.Loading && result.data.isNullOrEmpty()
+                error.isVisible = result is Resource.Error && result.data.isNullOrEmpty()
+                recyclerView.isVisible = result is Resource.Success && !result.data.isNullOrEmpty()
+
+                error.text = result.throwable?.localizedMessage
+            }
+
+            // Old version
+            /*when (result) {
 
                 is Resource.Loading -> {
                     binding.apply {
@@ -76,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                         error.isVisible = false
                     }
 
-                    result.data?.let { mRestaurantAdapter.setFoods(it) }
+                    result.data?.let { mRestaurantAdapter.setFoods(it.map { restaurantDto -> restaurantDto.toRestaurant() }) }
                 }
 
                 is Resource.Error -> {
@@ -86,10 +101,10 @@ class MainActivity : AppCompatActivity() {
                         error.isVisible = true
                     }
 
-                    result.message?.let { binding.error.text = it }
+                    result.throwable?.message.let { binding.error.text = it }
                 }
 
-            }
+            }*/
 
         }
 
