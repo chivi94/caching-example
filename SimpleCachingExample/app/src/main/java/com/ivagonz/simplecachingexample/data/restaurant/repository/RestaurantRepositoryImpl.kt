@@ -15,12 +15,12 @@ import javax.inject.Inject
 class RestaurantRepositoryImpl @Inject constructor(
     private val api: RestaurantApi,
     private val db: RestaurantDatabase
-) {
-    //: RestaurantRepository {
+) : RestaurantRepository {
+
 
     private val restaurantDao = db.restaurantDao()
 
-    fun getRestaurants(): Flow<Resource<List<RestaurantDto>>> =
+    override fun getRestaurants(): Flow<Resource<List<RestaurantDto>>> =
         networkBoundResource(
             query = {
                 restaurantDao.getAllRestaurants()

@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.ivagonz.simplecachingexample.common.Constants
 import com.ivagonz.simplecachingexample.data.RestaurantDatabase
 import com.ivagonz.simplecachingexample.data.restaurant.api.RestaurantApi
+import com.ivagonz.simplecachingexample.data.restaurant.repository.RestaurantRepositoryImpl
+import com.ivagonz.simplecachingexample.domain.repository.RestaurantRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,6 +36,15 @@ object AppModule {
     @Singleton
     fun provideDatabase(app: Application): RestaurantDatabase =
         Room.databaseBuilder(app, RestaurantDatabase::class.java, Constants.DATABASE_NAME).build()
+
+    @Provides
+    @Singleton
+    fun provideRestaurantRepository(
+        api: RestaurantApi,
+        db: RestaurantDatabase
+    ): RestaurantRepository {
+        return RestaurantRepositoryImpl(api, db)
+    }
 
 
 }
