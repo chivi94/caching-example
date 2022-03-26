@@ -12,8 +12,6 @@ import com.ivagonz.simplecachingexample.presentation.main.recyclerview.view_hold
 
 class RestaurantListAdapter(private val mContext: Context) : ListAdapter<Restaurant, RestaurantItemViewHolder>(RestaurantItemComparator()) {
 
-    private val mRestaurantsList = arrayListOf<Restaurant>()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantItemViewHolder {
         return RestaurantItemViewHolder(
             LayoutInflater.from(mContext)
@@ -22,14 +20,9 @@ class RestaurantListAdapter(private val mContext: Context) : ListAdapter<Restaur
     }
 
     override fun onBindViewHolder(holder: RestaurantItemViewHolder, position: Int) {
-        holder.bind(mRestaurantsList[position])
-    }
-
-    override fun getItemCount(): Int = mRestaurantsList.size
-
-    fun setFoods(newRestaurants: List<Restaurant>) {
-        mRestaurantsList.clear()
-        mRestaurantsList.addAll(newRestaurants)
-        notifyItemRangeChanged(0, newRestaurants.size)
+        val currentItem = getItem(position)
+        if (currentItem != null) {
+            holder.bind(currentItem)
+        }
     }
 }

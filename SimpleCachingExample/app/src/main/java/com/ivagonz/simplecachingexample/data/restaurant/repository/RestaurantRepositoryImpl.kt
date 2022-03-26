@@ -20,7 +20,7 @@ class RestaurantRepositoryImpl @Inject constructor(
 
     private val restaurantDao = db.restaurantDao()
 
-    override fun getRestaurants(): Flow<Resource<List<RestaurantDto>>> =
+    override fun getRestaurants() =
         networkBoundResource(
             query = {
                 restaurantDao.getAllRestaurants()

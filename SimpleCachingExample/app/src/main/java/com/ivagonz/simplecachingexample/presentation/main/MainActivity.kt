@@ -61,14 +61,12 @@ class MainActivity : AppCompatActivity() {
         mViewModel.restaurants.observe(mLifeCycleOwner) { result ->
 
             // New version
-            //result.data?.let { mRestaurantAdapter.setFoods(it.map { restaurantDto -> restaurantDto.toRestaurant() }) }
-
             mRestaurantAdapter.submitList(result.data?.map { it.toRestaurant() })
 
             binding.apply {
                 progress.isVisible = result is Resource.Loading && result.data.isNullOrEmpty()
                 error.isVisible = result is Resource.Error && result.data.isNullOrEmpty()
-                recyclerView.isVisible = result is Resource.Success && !result.data.isNullOrEmpty()
+                recyclerView.isVisible = result is Resource.Success || !result.data.isNullOrEmpty()
 
                 error.text = result.throwable?.localizedMessage
             }
