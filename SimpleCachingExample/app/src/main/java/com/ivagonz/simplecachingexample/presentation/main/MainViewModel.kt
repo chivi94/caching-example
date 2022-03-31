@@ -1,19 +1,34 @@
 package com.ivagonz.simplecachingexample.presentation.main
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
+import com.ivagonz.simplecachingexample.common.Resource
+import com.ivagonz.simplecachingexample.data.restaurant.dto.RestaurantDto
 import com.ivagonz.simplecachingexample.data.restaurant.repository.RestaurantRepositoryImpl
+import com.ivagonz.simplecachingexample.domain.model.Restaurant
 import com.ivagonz.simplecachingexample.domain.repository.RestaurantRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    restaurantRepository: RestaurantRepositoryImpl
+    private val restaurantRepository: RestaurantRepositoryImpl
 ) : ViewModel() {
 
     // TODO: New version
-    val restaurants = restaurantRepository.getRestaurants().asLiveData()
+    //val restaurants = restaurantRepository.getRestaurants().asLiveData()
+    private val _restaurantsList = MutableLiveData<Resource<List<RestaurantDto>>>()
+    val restaurantsList: LiveData<Resource<List<RestaurantDto>>> = _restaurantsList
+
+
+    fun getRestaurants() {
+        viewModelScope.launch {
+            restaurantRepository.getRestaurants().collect { restaurants ->
+                _restaurantsList.postValue(restaurants)
+            }
+        }
+    }
 
     // TODO: Previous version
     /*private val _restaurantsList = MutableLiveData<Resource<List<Restaurant>>>()

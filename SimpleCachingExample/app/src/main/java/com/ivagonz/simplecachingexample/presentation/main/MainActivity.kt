@@ -1,9 +1,13 @@
 package com.ivagonz.simplecachingexample.presentation.main
 
+import android.content.BroadcastReceiver
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -14,6 +18,7 @@ import com.ivagonz.simplecachingexample.databinding.ActivityMainBinding
 import com.ivagonz.simplecachingexample.presentation.main.recyclerview.adapter.RestaurantListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +28,32 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mContext: Context
     private lateinit var mLifeCycleOwner: LifecycleOwner
     private lateinit var mRestaurantAdapter: RestaurantListAdapter
+    private lateinit var wifiManager: WifiManager
+
+    private val wifiStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val wifiStateExtra = intent.getIntExtra(
+                WifiManager.EXTRA_WIFI_STATE,
+                WifiManager.WIFI_STATE_UNKNOWN
+            )
+            when (wifiStateExtra) {
+                WifiManager.WIFI_STATE_ENABLED -> {
+                    mViewModel.getRestaurants()
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intentFilter = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        registerReceiver(wifiStateReceiver, intentFilter)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(wifiStateReceiver)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +64,13 @@ class MainActivity : AppCompatActivity() {
         mContext = this@MainActivity
         mLifeCycleOwner = this@MainActivity
 
+        wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+
         setupUI()
 
         setupObservers()
+
+        mViewModel.getRestaurants()
     }
 
     private fun setupUI() {
@@ -58,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupObservers() {
 
-        mViewModel.restaurants.observe(mLifeCycleOwner) { result ->
+        mViewModel.restaurantsList.observe(mLifeCycleOwner) { result ->
 
             // New version
             mRestaurantAdapter.submitList(result.data?.map { it.toRestaurant() })
