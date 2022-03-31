@@ -12,11 +12,11 @@ inline fun <ResultType, RequestType> networkBoundResource(
 
     // Check if we need fetch new data from api
     val data = query().first()
-
+    emit(Resource.Loading(data))
     // Api data
     val flow = if (shouldFetch(data)) {
         // Loading state
-        emit(Resource.Loading(data))
+        //  emit(Resource.Loading(data))
 
         try {
             // Cache data

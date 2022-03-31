@@ -8,11 +8,13 @@ import android.net.wifi.WifiManager
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ivagonz.simplecachingexample.common.Resource
+import com.ivagonz.simplecachingexample.common.broadcast_receivers.NetworkBroadcastReceiver
 import com.ivagonz.simplecachingexample.data.restaurant.dto.toRestaurant
 import com.ivagonz.simplecachingexample.databinding.ActivityMainBinding
 import com.ivagonz.simplecachingexample.presentation.main.recyclerview.adapter.RestaurantListAdapter
@@ -28,9 +30,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mContext: Context
     private lateinit var mLifeCycleOwner: LifecycleOwner
     private lateinit var mRestaurantAdapter: RestaurantListAdapter
-    private lateinit var wifiManager: WifiManager
+    private lateinit var mNetworkStateReceiver: NetworkBroadcastReceiver
+    //private lateinit var wifiManager: WifiManager
 
-    private val wifiStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    /*private val wifiStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val wifiStateExtra = intent.getIntExtra(
                 WifiManager.EXTRA_WIFI_STATE,
@@ -42,17 +45,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+    }*/
 
     override fun onStart() {
         super.onStart()
         val intentFilter = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
-        registerReceiver(wifiStateReceiver, intentFilter)
+        //registerReceiver(wifiStateReceiver, intentFilter)
     }
 
     override fun onStop() {
         super.onStop()
-        unregisterReceiver(wifiStateReceiver)
+        unregisterReceiver(mNetworkStateReceiver)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,11 +67,19 @@ class MainActivity : AppCompatActivity() {
         mContext = this@MainActivity
         mLifeCycleOwner = this@MainActivity
 
-        wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+        //wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
 
         setupUI()
 
         setupObservers()
+
+        val intentFilter = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        mNetworkStateReceiver = NetworkBroadcastReceiver(this) { hasInternet ->
+            if (hasInternet) {
+                mViewModel.getRestaurants()
+            }
+        }
+        registerReceiver(mNetworkStateReceiver, intentFilter)
 
         mViewModel.getRestaurants()
     }
@@ -99,11 +110,15 @@ class MainActivity : AppCompatActivity() {
             mRestaurantAdapter.submitList(result.data?.map { it.toRestaurant() })
 
             binding.apply {
+                //progress.isVisible = result is Resource.Loading && result.data.isNullOrEmpty()
                 progress.isVisible = result is Resource.Loading && result.data.isNullOrEmpty()
                 error.isVisible = result is Resource.Error && result.data.isNullOrEmpty()
                 recyclerView.isVisible = result is Resource.Success || !result.data.isNullOrEmpty()
+                //recyclerView.isGone = result is Resource.Loading || result is Resource.Error
 
                 error.text = result.throwable?.localizedMessage
+
+                recyclerView.scrollToPosition(0)
             }
 
             // Old version
